@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-ink text-white;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-ink font-sans text-white antialiased;
+  }
+  ::selection {
+    background: #fff;
+    color: #000;
+  }
+  :focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-[1600px] px-4 sm:px-8;
+  }
+  .btn {
+    @apply inline-flex h-12 items-center justify-center bg-white px-6 text-sm font-semibold text-black transition-colors hover:bg-white/80 disabled:cursor-not-allowed disabled:bg-surface-raised disabled:text-mute;
+  }
+  .btn-outline {
+    @apply inline-flex h-12 items-center justify-center border border-white/30 px-6 text-sm font-semibold text-white transition-colors hover:border-white disabled:cursor-not-allowed disabled:text-mute;
+  }
+  .field {
+    @apply h-12 w-full border border-transparent bg-surface px-4 text-sm text-white placeholder:text-mute focus:border-white;
+  }
+  .field-label {
+    @apply mb-2 block text-sm text-mute;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
