@@ -8,10 +8,32 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
-  // Lets next/image resize product photos at the edge.
-  "images": {
-    "binding": "IMAGES"
+
+  // The shop database (products, orders, accounts). There is no database_id on
+  // purpose: Cloudflare creates the database on the first deploy, and the app
+  // creates its own tables the first time it runs. Nothing to set up by hand.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "peacemagents-db"
+    }
+  ],
+
+  // Cloudflare Email Service, used for order confirmations. Needs the Workers
+  // Paid plan and a sending domain. See the README.
+  "send_email": [{ "name": "EMAIL" }],
+
+  // Not secret, so they live here and are re-applied on every deploy.
+  // EDIT THESE TWO before you deploy.
+  "vars": {
+    // "Name <address>" on a domain you have set up for Cloudflare Email Service.
+    "EMAIL_FROM": "PEACEMAGENTS <info@peacemagents.com>",
+    // Your own email. It is your admin login and where new-order alerts go.
+    "ADMIN_EMAIL": "feremengamcgregor@gmail.com",
+    // Paynow test mode. Change to "false" when you go live.
+    "PAYNOW_TEST_MODE": "true"
   },
+
   "observability": {
     "enabled": true
   }

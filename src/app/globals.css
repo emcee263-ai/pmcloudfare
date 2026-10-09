@@ -3,26 +3,61 @@
 @tailwind utilities;
 
 @layer base {
+  /* Colours are stored as space-separated channels so Tailwind can add opacity to them. */
+  :root {
+    color-scheme: dark;
+    --bg: 0 0 0;
+    --surface: 18 18 18;
+    --surface-raised: 26 26 26;
+    --mute: 128 128 128;
+    --fg: 255 255 255;
+    --on-fg: 0 0 0;
+  }
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --bg: 255 255 255;
+    --surface: 244 244 244;
+    --surface-raised: 232 232 232;
+    --mute: 102 102 102;
+    --fg: 10 10 10;
+    --on-fg: 255 255 255;
+  }
   html {
     @apply bg-ink text-white;
     -webkit-text-size-adjust: 100%;
   }
   body {
     @apply bg-ink font-sans text-white antialiased;
+    overflow-x: clip;
+  }
+  img,
+  svg,
+  video {
+    max-width: 100%;
   }
   ::selection {
-    background: #fff;
-    color: #000;
+    background: rgb(var(--fg));
+    color: rgb(var(--bg));
   }
   :focus-visible {
-    outline: 2px solid #fff;
+    outline: 2px solid rgb(var(--fg));
     outline-offset: 3px;
   }
 }
 
 @layer components {
+  /* Page width: fills the screen on phones, tablets and desktops, with side space that grows gently.
+     The safe-area values keep content clear of notches and rounded corners. */
   .shell {
-    @apply mx-auto w-full max-w-[1600px] px-4 sm:px-8;
+    @apply mx-auto w-full;
+    max-width: 160rem;
+    padding-left: max(clamp(1rem, 3.5vw, 4rem), env(safe-area-inset-left));
+    padding-right: max(clamp(1rem, 3.5vw, 4rem), env(safe-area-inset-right));
+  }
+  .page-title {
+    font-size: clamp(2.5rem, 7vw + 0.5rem, 6.5rem);
+    line-height: 1;
+    overflow-wrap: anywhere;
   }
   .btn {
     @apply inline-flex h-12 items-center justify-center bg-white px-6 text-sm font-semibold text-black transition-colors hover:bg-white/80 disabled:cursor-not-allowed disabled:bg-surface-raised disabled:text-mute;

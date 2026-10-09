@@ -1,119 +1,107 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
-import { isSupabaseConfigured } from '@/lib/supabase/config';
 
-/** Only allow same-site relative redirects. */
 function safeNext(value: string | null) {
-  return value && value.startsWith('/') && !value.startsWith('//') ? value : '/account';
+  return value && value.startsWith('/') && !value.startsWith('//') ? value : null;
 }
 
 export function LoginForm() {
   const router = useRouter();
-  const next = safeNext(useSearchParams().get('next'));
-
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
+  const params = useSearchParams();
+  const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!isSupabaseConfigured) {
-    return (
-      <p className="max-w-md text-mute">
-        Accounts need a Supabase project. Add your keys to <code>.env.local</code> and restart the dev server.
-      </p>
-    );
-  }
-
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setBusy(true);
-    setMessage(null);
-    const supabase = createClient();
+    setError(null);
+    const form = new FormData(e.currentTarget);
+    const body =
+      mode === 'login'
+        ? { email: form.get('email'), password: form.get('password') }
+        : { full_name: form.get('full_name'), email: form.get('email'), password: form.get('password') };
 
-    if (mode === 'signin') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        setMessage(error.message);
+    try {
+      const res = await fetch(mode === 'login' ? '/api/auth/login' : '/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = (await res.json().catch(() => ({}))) as { error?: string; role?: string };
+      if (!res.ok) {
+        setError(data.error ?? 'Something went wrong. Try again.');
         setBusy(false);
         return;
       }
+      const next = safeNext(params.get('next')) ?? (data.role === 'admin' ? '/admin' : '/account');
       router.push(next);
       router.refresh();
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { full_name: name },
-        emailRedirectTo: `${window.location.origin}/account`,
-      },
-    });
-    if (error) {
-      setMessage(error.message);
-      setBusy(false);
-      return;
-    }
-    if (data.session) {
-      router.push(next);
-      router.refresh();
-    } else {
-      setMessage('Check your email to confirm your account, then sign in.');
+    } catch {
+      setError('Could not reach the server. Check your connection and try again.');
       setBusy(false);
     }
   }
 
   return (
-    <form onSubmit={onSubmit} className="max-w-sm space-y-4">
+    <form onSubmit={onSubmit} className="w-full max-w-xl space-y-5" noValidate={false}>
+      <div className="flex gap-2">
+        {(['login', 'signup'] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => {
+              setMode(m);
+              setError(null);
+            }}
+            aria-pressed={mode === m}
+            className={`h-10 px-4 text-sm ${mode === m ? 'bg-white text-black' : 'bg-surface text-mute hover:text-white'}`}
+          >
+            {m === 'login' ? 'Sign in' : 'Create account'}
+          </button>
+        ))}
+      </div>
+
       {mode === 'signup' && (
         <div>
-          <label htmlFor="name" className="field-label">Full name</label>
-          <input id="name" className="field" autoComplete="name" required value={name} onChange={(e) => setName(e.target.value)} />
+          <label htmlFor="full_name" className="field-label">Full name</label>
+          <input id="full_name" name="full_name" required autoComplete="name" className="field" />
         </div>
       )}
       <div>
         <label htmlFor="email" className="field-label">Email</label>
-        <input id="email" type="email" className="field" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input id="email" name="email" type="email" required autoComplete="email" className="field" />
       </div>
       <div>
         <label htmlFor="password" className="field-label">Password</label>
         <input
           id="password"
+          name="password"
           type="password"
-          className="field"
-          autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-          minLength={8}
           required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          minLength={mode === 'signup' ? 8 : undefined}
+          autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+          className="field"
         />
+        {mode === 'signup' && <p className="mt-2 text-xs text-mute">At least 8 characters.</p>}
+        {mode === 'login' && (
+          <Link href="/forgot-password" className="mt-2 inline-block text-xs text-mute hover:text-white">
+            Forgot your password?
+          </Link>
+        )}
       </div>
 
-      {message && (
-        <p role="alert" className="bg-surface p-3 text-sm">
-          {message}
+      {error && (
+        <p role="alert" className="text-sm text-white">
+          {error}
         </p>
       )}
 
-      <button type="submit" className="btn w-full" disabled={busy}>
-        {busy ? 'One moment' : mode === 'signin' ? 'Sign in' : 'Create account'}
-      </button>
-
-      <button
-        type="button"
-        className="text-sm text-mute hover:text-white"
-        onClick={() => {
-          setMode(mode === 'signin' ? 'signup' : 'signin');
-          setMessage(null);
-        }}
-      >
-        {mode === 'signin' ? 'New here? Create an account' : 'Already have an account? Sign in'}
+      <button type="submit" disabled={busy} className="btn w-full">
+        {busy ? 'One moment...' : mode === 'login' ? 'Sign in' : 'Create account'}
       </button>
     </form>
   );

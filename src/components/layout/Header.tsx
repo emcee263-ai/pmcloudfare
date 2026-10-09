@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from './ThemeToggle';
 import { useCartStore } from '@/store/cart';
 import { useUIStore } from '@/store/ui';
 
@@ -45,7 +46,7 @@ export function Header() {
       </a>
 
       <div className="shell flex h-16 items-center justify-between">
-        <Link href="/" className="font-display text-lg font-extrabold tracking-tight">
+        <Link href="/" className="font-display text-lg font-extrabold tracking-tight max-[360px]:text-base">
           PEACEMAGENTS
         </Link>
 
@@ -62,7 +63,8 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-5 text-sm">
+        <div className="flex items-center gap-2 text-sm sm:gap-4">
+          <ThemeToggle />
           <button type="button" onClick={openCart} aria-label={`Open cart, ${count} items`}>
             cart ({count})
           </button>

@@ -11,7 +11,7 @@ export function ProductCard({ product, priority }: { product: Product; priority?
       <div className="relative">
         <ProductImage product={product} priority={priority} className="group-hover:bg-surface-raised" />
         {product.is_drop && (
-          <span className="absolute left-3 top-3 bg-crimson px-2 py-1 text-xs font-semibold">Drop</span>
+          <span className="absolute left-3 top-3 bg-crimson px-2 py-1 text-xs font-semibold text-[#fff]">Drop</span>
         )}
         {soldOut && (
           <span className="absolute bottom-3 left-3 bg-black px-2 py-1 text-xs text-mute">Sold out</span>

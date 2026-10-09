@@ -41,3 +41,29 @@ export function totalStock(product: Product) {
 export function round2(n: number) {
   return Math.round(n * 100) / 100;
 }
+
+export function toCents(amount: number) {
+  return Math.round(amount * 100);
+}
+
+export function fromCents(cents: number) {
+  return cents / 100;
+}
+
+/** ISO time without milliseconds, so it sorts the same way as the timestamps SQLite writes. */
+export function isoSeconds(date: Date = new Date()) {
+  return date.toISOString().slice(0, 19) + 'Z';
+}
+
+export function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+/** Short reference shown to customers, for example "7F3A21C4". */
+export function orderRef(id: string) {
+  return id.slice(0, 8).toUpperCase();
+}

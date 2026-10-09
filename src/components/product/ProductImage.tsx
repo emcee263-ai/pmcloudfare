@@ -17,6 +17,7 @@ export function ProductImage({ product, priority, sizes, className }: Props) {
     <div className={cn('relative aspect-[4/5] overflow-hidden bg-surface transition-colors', className)}>
       {image ? (
         <Image
+          unoptimized
           src={image.image_url}
           alt={product.name}
           fill

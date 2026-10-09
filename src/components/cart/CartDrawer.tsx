@@ -92,7 +92,7 @@ export function CartDrawer() {
                 <li key={item.variantId} className="flex gap-4 py-5">
                   <div className="relative h-24 w-20 shrink-0 bg-surface-raised">
                     {item.image ? (
-                      <Image src={item.image} alt="" fill sizes="80px" className="object-cover" />
+                      <Image unoptimized src={item.image} alt="" fill sizes="80px" className="object-cover" />
                     ) : (
                       <Silhouette kind={getKind(item.name)} className="absolute inset-0 m-auto w-12 text-mute/70" />
                     )}

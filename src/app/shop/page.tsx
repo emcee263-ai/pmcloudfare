@@ -5,6 +5,7 @@ import { getProducts } from '@/lib/products';
 import { cn, getKind } from '@/lib/utils';
 
 export const metadata: Metadata = { title: 'Shop' };
+export const dynamic = 'force-dynamic';
 
 const FILTERS = [
   { key: 'all', label: 'All' },
@@ -25,7 +26,7 @@ export default async function ShopPage({
 
   return (
     <section className="shell py-10 sm:py-16">
-      <h1 className="font-display text-5xl font-extrabold tracking-tight sm:text-7xl">Shop</h1>
+      <h1 className="page-title font-display font-extrabold tracking-tight">Shop</h1>
 
       <nav aria-label="Filter by type" className="mt-8 flex flex-wrap gap-2">
         {FILTERS.map((f) => (
@@ -46,7 +47,7 @@ export default async function ShopPage({
       {visible.length === 0 ? (
         <p className="mt-16 text-mute">Nothing in this category yet. Check back after the next drop.</p>
       ) : (
-        <div className="mt-10 grid grid-cols-2 gap-x-3 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-x-3 gap-y-10 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
           {visible.map((product, i) => (
             <ProductCard key={product.id} product={product} priority={i < 4} />
           ))}

@@ -18,6 +18,7 @@ export function ProductGallery({ product }: { product: Product }) {
           className={cn('relative aspect-[4/5] bg-surface', i === 0 && 'sm:col-span-2')}
         >
           <Image
+          unoptimized
             src={image.image_url}
             alt={`${product.name}, view ${i + 1}`}
             fill

@@ -17,7 +17,7 @@ export default async function DropsPage() {
 
   return (
     <section className="shell py-10 sm:py-16">
-      <h1 className="font-display text-5xl font-extrabold tracking-tight sm:text-7xl">Drops</h1>
+      <h1 className="page-title font-display font-extrabold tracking-tight">Drops</h1>
 
       {products.length === 0 && (
         <p className="mt-10 max-w-md text-mute">No drops are scheduled right now. Check back soon.</p>
@@ -31,7 +31,7 @@ export default async function DropsPage() {
               <ProductImage product={product} sizes="220px" />
               <div className="flex flex-col justify-between gap-6">
                 <div>
-                  <span className="inline-block bg-crimson px-2 py-1 text-xs font-semibold">Drop</span>
+                  <span className="inline-block bg-crimson px-2 py-1 text-xs font-semibold text-[#fff]">Drop</span>
                   <h3 className="mt-3 font-display text-3xl font-bold">{product.name}</h3>
                   {product.description && <p className="mt-2 max-w-lg text-mute">{product.description}</p>}
                   <p className="mt-2 text-sm">{formatPrice(product.price)}</p>

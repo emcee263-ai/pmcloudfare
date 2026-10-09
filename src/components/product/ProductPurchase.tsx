@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useLiveStock } from '@/lib/hooks';
 import { useCartStore } from '@/store/cart';
 import { useUIStore } from '@/store/ui';
 import { SizeSelector } from './SizeSelector';
@@ -20,7 +19,7 @@ function stockMessage(selected: ProductVariant | null, variants: ProductVariant[
 }
 
 export function ProductPurchase({ product }: { product: Product }) {
-  const variants = useLiveStock(product.id, product.product_variants);
+  const variants = product.product_variants;
   const [selectedId, setSelectedId] = useState<string | null>(
     product.product_variants.length === 1 && product.product_variants[0].stock_quantity > 0
       ? product.product_variants[0].id

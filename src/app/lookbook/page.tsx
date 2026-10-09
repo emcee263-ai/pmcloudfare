@@ -27,7 +27,7 @@ const FRAMES: Frame[] = [
 export default function LookbookPage() {
   return (
     <section className="shell py-10 sm:py-16">
-      <h1 className="font-display text-5xl font-extrabold tracking-tight sm:text-7xl">Lookbook</h1>
+      <h1 className="page-title font-display font-extrabold tracking-tight">Lookbook</h1>
 
       <div className="mt-10 grid gap-3 md:grid-cols-12">
         {FRAMES.map((frame) => (
@@ -35,6 +35,7 @@ export default function LookbookPage() {
             <div className={cn('relative w-full bg-surface', frame.ratio)}>
               {frame.src ? (
                 <Image
+          unoptimized
                   src={frame.src}
                   alt={frame.caption}
                   fill

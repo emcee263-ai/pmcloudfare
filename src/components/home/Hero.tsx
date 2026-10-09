@@ -16,7 +16,7 @@ export function Hero({ drop }: { drop: Product | null }) {
       {drop ? (
         <div className="mt-10 grid gap-8 md:mt-14 md:grid-cols-[1fr_auto] md:items-end">
           <div className="max-w-xl">
-            <span className="inline-block bg-crimson px-2 py-1 text-xs font-semibold">Limited drop</span>
+            <span className="inline-block bg-crimson px-2 py-1 text-xs font-semibold text-[#fff]">Limited drop</span>
             <h2 className="mt-4 font-display text-3xl font-bold sm:text-4xl">{drop.name}</h2>
             {drop.description && <p className="mt-3 text-mute">{drop.description}</p>}
           </div>

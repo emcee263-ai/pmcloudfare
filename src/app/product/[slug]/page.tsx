@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { EnquireLinks } from '@/components/product/EnquireLinks';
 import { ProductGallery } from '@/components/product/ProductGallery';
+import { requestOrigin } from '@/lib/cloudflare';
 import { ProductPurchase } from '@/components/product/ProductPurchase';
 import { SizeGuide } from '@/components/product/SizeGuide';
 import { getProduct } from '@/lib/products';
@@ -25,9 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: product.name,
       description,
       type: 'website',
-      images: image ? [{ url: image }] : undefined,
+      images: [{ url: image ?? '/og.png' }],
     },
-    twitter: { card: image ? 'summary_large_image' : 'summary', title: product.name, description },
+    twitter: { card: 'summary_large_image', title: product.name, description, images: [image ?? '/og.png'] },
   };
 }
 
@@ -42,7 +44,7 @@ export default async function ProductPage({ params }: Props) {
 
       <div className="lg:sticky lg:top-24 lg:self-start">
         {product.is_drop && (
-          <span className="inline-block bg-crimson px-2 py-1 text-xs font-semibold">Drop</span>
+          <span className="inline-block bg-crimson px-2 py-1 text-xs font-semibold text-[#fff]">Drop</span>
         )}
         <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{product.name}</h1>
         <p className="mt-3 text-xl">{formatPrice(product.price)}</p>
@@ -50,6 +52,10 @@ export default async function ProductPage({ params }: Props) {
 
         <div className="mt-8">
           <ProductPurchase product={product} />
+        </div>
+
+        <div className="mt-10">
+          <EnquireLinks name={product.name} url={`${await requestOrigin()}/product/${product.slug}`} />
         </div>
 
         <div className="mt-10">
