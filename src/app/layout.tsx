@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Syne } from 'next/font/google';
 import Script from 'next/script';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { CookieNotice } from '@/components/layout/CookieNotice';
@@ -7,19 +6,6 @@ import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { StoreHydrator } from '@/components/layout/StoreHydrator';
 import './globals.css';
-
-const syne = Syne({
-  subsets: ['latin'],
-  weight: ['500', '700', '800'],
-  variable: '--font-syne',
-  display: 'swap',
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
@@ -55,7 +41,7 @@ const themeScript = `(function(){try{var t=localStorage.getItem('pm-theme');if(t
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${syne.variable} ${inter.variable}`}>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

@@ -5,6 +5,8 @@
 @layer base {
   /* Colours are stored as space-separated channels so Tailwind can add opacity to them. */
   :root {
+    --font-syne: 'Arial', 'Helvetica Neue', sans-serif;
+    --font-inter: 'Arial', 'Helvetica Neue', sans-serif;
     color-scheme: dark;
     --bg: 0 0 0;
     --surface: 18 18 18;
