@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import localFont from 'next/font/local';
 import Script from 'next/script';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { CookieNotice } from '@/components/layout/CookieNotice';
@@ -6,6 +7,19 @@ import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { StoreHydrator } from '@/components/layout/StoreHydrator';
 import './globals.css';
+
+// Fonts are stored in the project (src/fonts), so the build never has to download anything.
+const inter = localFont({
+  src: [
+    { path: '../fonts/Inter-Regular.woff', weight: '400', style: 'normal' },
+    { path: '../fonts/Inter-Medium.woff', weight: '500', style: 'normal' },
+    { path: '../fonts/Inter-SemiBold.woff', weight: '600', style: 'normal' },
+    { path: '../fonts/Inter-Bold.woff', weight: '700', style: 'normal' },
+    { path: '../fonts/Inter-ExtraBold.woff', weight: '800', style: 'normal' },
+  ],
+  variable: '--font-inter',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
@@ -41,14 +55,8 @@ const themeScript = `(function(){try{var t=localStorage.getItem('pm-theme');if(t
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className="font-sans">
+    <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@500;700;800&display=swap"
-          rel="stylesheet"
-        />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="flex min-h-dvh flex-col">

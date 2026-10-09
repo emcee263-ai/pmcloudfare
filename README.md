@@ -7,6 +7,7 @@ Next.js 15 (App Router), TypeScript, Tailwind CSS 3 and Zustand, running on Clou
 - **Payments:** Paynow Zimbabwe. Ecocash and OneMoney (a prompt on the customer's phone) and Visa, Mastercard or other methods on Paynow's secure page. Card details never touch this site. Card availability depends on your Paynow account, so ask Paynow to enable it.
 - **Enquiries:** every product page has WhatsApp, email, call and Instagram buttons, and there is a `/contact` page. Edit the details in `src/lib/site.ts`.
 - **Themes and screen sizes:** dark by default, with a light theme behind the half-moon button in the header. The choice is remembered on the device. Colours live in `src/app/globals.css` (the `--bg`, `--fg`, `--surface` and `--mute` values). Layouts stretch to the full width on phones, tablets, laptops and wide monitors, and respect phone notches.
+- **Fonts:** Inter, stored in `src/fonts/` and served from the site itself, so the build never has to download anything from Google. To use another heading font, see `src/fonts/README.txt`.
 - **Policies:** `/faq`, `/privacy`, `/cookies` and `/terms`, plus a short cookie notice. Read them and check they match how you really run the shop.
 - **Emails:** Cloudflare Email Service. Customers get an order confirmation once their payment clears, and you get a new-order alert.
 
@@ -44,7 +45,7 @@ These are baked in at build time, so changing them needs a new deploy.
 Change the two placeholders under `vars`:
 
 - `ADMIN_EMAIL`: your own email. It is your admin login, and new-order alerts go here.
-- `EMAIL_FROM`: `PEACEMAGENTS <orders@your-domain.com>` on a domain you set up in step 5.
+- `EMAIL_FROM`: the address your customers see emails coming from, written as `PEACEMAGENTS <orders@your-domain.com>`. You choose it yourself. The part after the `@` must be a domain you own and have set up in step 5, and the part before it (`orders`, `hello`, anything) does not need to exist as a real mailbox. If you have no domain yet, leave the placeholder. Orders still work, emails will fail with a reason shown on the order in the admin, and you can press **Resend confirmation** once the domain is ready.
 
 ### 4. Secrets (Settings > Variables and secrets, runtime, type "Secret")
 
@@ -125,6 +126,7 @@ Local development uses a local copy of the D1 database. Put `ADMIN_PASSWORD` and
 - **Old pending orders** are cleaned up whenever someone starts a checkout or you open the admin. There is no background timer.
 - **If the database is not created automatically:** run `npx wrangler d1 create peacemagents-db`, then add the printed `"database_id": "..."` next to `database_name` in `wrangler.jsonc`.
 - Do not add `export const runtime = 'edge'` to routes.
+- **Admin security:** `/admin` pages and every `/api/admin` route check your signed-in session on the server, so a visitor who guesses the address gets nothing. You do not need a separate admin site. If you want an extra layer, you can put Cloudflare Access (Zero Trust) in front of the paths `/admin*` and `/api/admin*` in the Cloudflare dashboard.
 
 ## Structure
 

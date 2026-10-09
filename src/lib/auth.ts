@@ -51,10 +51,12 @@ export async function sha256Hex(value: string) {
 
 // ---------- passwords ----------
 
-async function derive(password: string, salt: Uint8Array, iterations: number) {
+async function derive(password: string, saltBytes: Uint8Array, iterations: number) {
+  // Copy into a fresh buffer. Newer TypeScript only accepts bytes backed by a plain ArrayBuffer here.
+  const salt = new Uint8Array(saltBytes.length);
+  salt.set(saltBytes);
   const key = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']);
-  const saltBuffer = new Uint8Array(salt).buffer;
-  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: saltBuffer, iterations }, key, 256);
+  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt, iterations }, key, 256);
   return new Uint8Array(bits);
 }
 

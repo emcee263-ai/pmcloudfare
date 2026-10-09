@@ -18,7 +18,7 @@ const config: Config = {
         crimson: '#E50914', // drop and sale badges only
       },
       fontFamily: {
-        display: ['var(--font-syne)', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        display: ['var(--font-inter)', 'Helvetica Neue', 'Arial', 'sans-serif'],
         sans: ['var(--font-inter)', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
     },
