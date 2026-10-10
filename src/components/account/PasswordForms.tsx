@@ -40,7 +40,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="w-full max-w-xl space-y-5">
+    <form onSubmit={onSubmit} className="w-full space-y-5">
       <div>
         <label htmlFor="email" className="field-label">Email</label>
         <input id="email" name="email" type="email" required autoComplete="email" className="field" />
@@ -83,7 +83,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="w-full max-w-xl space-y-5">
+    <form onSubmit={onSubmit} className="w-full space-y-5">
       <div>
         <label htmlFor="password" className="field-label">New password</label>
         <input id="password" name="password" type="password" required minLength={8} autoComplete="new-password" className="field" />

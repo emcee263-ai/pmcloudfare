@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { EnquireLinks } from '@/components/product/EnquireLinks';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { ProductGallery } from '@/components/product/ProductGallery';
 import { requestOrigin } from '@/lib/cloudflare';
 import { ProductPurchase } from '@/components/product/ProductPurchase';
 import { SizeGuide } from '@/components/product/SizeGuide';
 import { getProduct } from '@/lib/products';
+import { absoluteUrl, breadcrumbJsonLd, productJsonLd } from '@/lib/seo';
+import { SITE } from '@/lib/site';
 import { formatPrice, getKind } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
@@ -15,21 +18,29 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
-  if (!product) return { title: 'Product not found' };
+  if (!product) return { title: 'Product not found', robots: { index: false } };
 
   const image = product.product_images[0]?.image_url;
-  const description = product.description ?? 'PEACEMAGENTS minimal streetwear.';
+  const description = (
+    product.description ?? `${product.name} by ${SITE.name}. Minimal streetwear from ${SITE.country}. Pay with Ecocash, OneMoney or card.`
+  ).slice(0, 200);
+  const path = `/product/${product.slug}`;
+  const shareImage = image ? absoluteUrl(image) : absoluteUrl('/og.png');
+  const shareTitle = `${product.name} | ${SITE.name}`;
 
   return {
     title: product.name,
     description,
+    alternates: { canonical: path },
     openGraph: {
-      title: product.name,
-      description,
       type: 'website',
-      images: [{ url: image ?? '/og.png' }],
+      siteName: SITE.name,
+      url: path,
+      title: shareTitle,
+      description,
+      images: [{ url: shareImage, alt: product.name }],
     },
-    twitter: { card: 'summary_large_image', title: product.name, description, images: [image ?? '/og.png'] },
+    twitter: { card: 'summary_large_image', title: shareTitle, description, images: [shareImage] },
   };
 }
 
@@ -39,10 +50,19 @@ export default async function ProductPage({ params }: Props) {
   if (!product) notFound();
 
   return (
-    <section className="shell grid gap-10 py-8 lg:grid-cols-[1.25fr_1fr] lg:gap-16 lg:py-14">
+    <>
+    <JsonLd data={productJsonLd(product)} />
+    <JsonLd
+      data={breadcrumbJsonLd([
+        { name: 'Home', path: '/' },
+        { name: 'Shop', path: '/shop' },
+        { name: product.name, path: `/product/${product.slug}` },
+      ])}
+    />
+    <section className="shell grid gap-10 py-8 md:grid-cols-[1.25fr_1fr] md:gap-10 md:py-14 lg:gap-16">
       <ProductGallery product={product} />
 
-      <div className="lg:sticky lg:top-24 lg:self-start">
+      <div className="md:sticky md:top-24 md:self-start">
         {product.is_drop && (
           <span className="inline-block bg-crimson px-2 py-1 text-xs font-semibold text-[#fff]">Drop</span>
         )}
@@ -63,5 +83,6 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </div>
     </section>
+    </>
   );
 }

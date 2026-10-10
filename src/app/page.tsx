@@ -1,9 +1,12 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Hero } from '@/components/home/Hero';
+import { Splash } from '@/components/home/Splash';
 import { ProductCard } from '@/components/product/ProductCard';
 import { getProducts } from '@/lib/products';
 
 export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { alternates: { canonical: '/' } };
 
 export default async function HomePage() {
   const products = await getProducts();
@@ -19,6 +22,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <Splash />
       <Hero drop={drop} />
 
       <section className="shell py-16" aria-labelledby="featured-heading">
@@ -34,7 +38,7 @@ export default async function HomePage() {
         {featured.length === 0 ? (
           <p className="text-mute">No products yet. Add some in the admin panel.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-10 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-10 md:grid-cols-4">
             {featured.map((product, i) => (
               <ProductCard key={product.id} product={product} priority={i < 2} />
             ))}

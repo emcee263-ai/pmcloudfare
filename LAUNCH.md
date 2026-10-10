@@ -7,7 +7,7 @@ Where each of the 20 launch items stands. **Done** means it is in the code. **Yo
 | 1 | Hide every API key | Done | A scan of `src/`, `wrangler.jsonc`, `.env.example` and the README found no keys. The only `NEXT_PUBLIC_` values are the site address, currency and the analytics token, which are public by nature. Paynow and admin secrets are read on the server only. **You:** keep secrets in Cloudflare only, never in chat or git. |
 | 2 | Rotate any key that was committed | You | **Revoke the GitHub token you used to push** at github.com/settings/tokens (it has write access to your repo). Make a new one only when you need it. Check history: `git log -p \| grep -iE "paynow\|password\|token\|secret"`. If anything shows up, treat it as leaked and replace it in Paynow or Cloudflare. |
 | 3 | Rate limiting | Done + You | In code: sign-in, sign-up, password reset and checkout are limited per visitor, and Paynow status checks are limited per order. **You:** add a Cloudflare rule as a second layer: Security > WAF > Rate limiting rules, match `/api/*`, about 60 requests per minute per IP. |
-| 4 | Auth on every route | Done | Every `/api/admin/*` route calls `requireAdminApi()` itself, and every admin page calls `requireAdmin()`. Public routes are on purpose: checkout, sign-in, sign-up, password reset, the order status check (unguessable order link) and the Paynow result (verified by hash, then confirmed by asking Paynow). |
+| 4 | Auth on every route | Done | Every `/api/admin/*` route calls `requireAdminApi()` itself, and every admin page calls `requireAdmin()`. Anyone who is not the signed-in admin sees a plain "Not found" page at `/admin`, never a sign-in screen. Public routes are on purpose: checkout, sign-in, sign-up, password reset, the order status check (unguessable order link) and the Paynow result (verified by hash, then confirmed by asking Paynow). |
 | 5 | Lock down database rules | Done | D1 has no public access and no keys in the browser. Only server code reads it. Customers can only list their own orders, and admin data needs an admin session. A single order page can be opened by anyone holding its random link, which is how the confirmation email works. |
 | 6 | Validate every input on the server | Done | Every JSON route validates with zod. Prices, names and stock come from the database, never from the browser. Coupon codes are re-checked on the server. |
 | 7 | Spending cap on AI provider | N/A | The shop does not call any AI service. **You:** set a billing alert in Cloudflare (Notifications) so unexpected Workers usage is flagged. |
@@ -74,3 +74,12 @@ In Cloudflare DNS, add a TXT record named `_dmarc` with the value `v=DMARC1; p=n
 5. **Afterwards.** Write down what happened, add the fix to this list, and run the test script above before reopening.
 
 **Launch day:** keep this file, your Paynow login and the Cloudflare dashboard open. Launch when you can watch it for the first hour, not at night.
+
+## After launch: search engines
+
+Do these once the shop is live. The details are in the README under "Search engines".
+
+1. Get your own domain if you can, and set the build variable `NEXT_PUBLIC_SITE_URL` to it.
+2. Add the site to Google Search Console, set `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`, verify, and submit `/sitemap.xml`.
+3. Check one product link in a link-preview tool (paste it into a WhatsApp chat to yourself): it should show the product photo, name and a short description.
+4. Check `/robots.txt` and `/sitemap.xml` open in the browser and list your own address, not `localhost`.

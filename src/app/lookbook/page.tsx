@@ -1,10 +1,15 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import Image from 'next/image';
 import { Silhouette } from '@/components/ui/Silhouette';
 import { cn } from '@/lib/utils';
 import type { ProductKind } from '@/types';
 
-export const metadata: Metadata = { title: 'Lookbook' };
+export const metadata: Metadata = pageMeta({
+  title: 'Lookbook',
+  description: 'The PEACEMAGENTS lookbook: oversized hoodies, boxy tees, caps and cargo trousers, styled plain and black.',
+  path: '/lookbook',
+});
 
 interface Frame {
   caption: string;

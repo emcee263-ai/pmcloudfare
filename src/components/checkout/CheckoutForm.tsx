@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { EMPTY_ADDRESS, PAYMENT_METHODS, type Address } from '@/lib/validation';
-import { cn, formatPrice } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
 import { cartTotals, useCartStore } from '@/store/cart';
 
 type Method = (typeof PAYMENT_METHODS)[number]['value'];
@@ -70,7 +70,7 @@ export function CheckoutForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
+    <form onSubmit={onSubmit} className="grid gap-12 md:grid-cols-[1.4fr_1fr]">
       <div className="space-y-10">
         <fieldset className="space-y-5">
           <legend className="mb-2 font-display text-2xl font-bold">Delivery</legend>
@@ -93,28 +93,24 @@ export function CheckoutForm() {
 
         <fieldset className="space-y-4">
           <legend className="mb-2 font-display text-2xl font-bold">Payment</legend>
-          {PAYMENT_METHODS.map((m) => (
-            <label
-              key={m.value}
-              className={cn(
-                'flex cursor-pointer items-start gap-4 border p-4',
-                method === m.value ? 'border-white bg-surface' : 'border-white/15 hover:border-white/40',
-              )}
-            >
-              <input
-                type="radio"
-                name="method"
-                value={m.value}
-                checked={method === m.value}
-                onChange={() => setMethod(m.value)}
-                className="mt-1 accent-white"
-              />
-              <span>
-                <span className="block font-semibold">{m.label}</span>
-                <span className="block text-sm text-mute">{m.hint}</span>
-              </span>
-            </label>
-          ))}
+          <div role="radiogroup" aria-label="Payment method" className="grid grid-cols-3 gap-2 sm:gap-3">
+            {PAYMENT_METHODS.map((m) => (
+              <label key={m.value} className="block cursor-pointer">
+                <input
+                  type="radio"
+                  name="method"
+                  value={m.value}
+                  checked={method === m.value}
+                  onChange={() => setMethod(m.value)}
+                  className="peer sr-only"
+                />
+                <span className="flex h-12 items-center justify-center border border-white/30 px-2 text-center text-sm transition-colors hover:border-white peer-checked:border-white peer-checked:bg-white peer-checked:font-semibold peer-checked:text-black peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-white">
+                  {m.short}
+                </span>
+              </label>
+            ))}
+          </div>
+          <p className="text-xs text-mute">{PAYMENT_METHODS.find((m) => m.value === method)?.hint}</p>
 
           {method !== 'paynow' && (
             <div>
@@ -138,7 +134,7 @@ export function CheckoutForm() {
         </fieldset>
       </div>
 
-      <aside className="h-fit space-y-6 bg-surface p-6 lg:sticky lg:top-24">
+      <aside className="h-fit space-y-6 bg-surface p-6 md:sticky md:top-24">
         <h2 className="font-display text-2xl font-bold">Your order</h2>
         <ul className="space-y-3 text-sm">
           {items.map((i) => (
@@ -161,7 +157,7 @@ export function CheckoutForm() {
         {error && <p role="alert" className="text-sm">{error}</p>}
 
         <button type="submit" disabled={busy} className="btn w-full">
-          {busy ? 'Starting payment...' : `Pay ${formatPrice(totals.total)}`}
+          {busy ? 'Starting payment...' : 'Place order'}
         </button>
       </aside>
     </form>

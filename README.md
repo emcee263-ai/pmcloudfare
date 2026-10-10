@@ -6,8 +6,10 @@ Next.js 15 (App Router), TypeScript, Tailwind CSS 3 and Zustand, running on Clou
 - **Admin dashboard:** `/admin`. Add, edit, hide and delete products, set stock and drop dates, and manage orders.
 - **Payments:** Paynow Zimbabwe. Ecocash and OneMoney (a prompt on the customer's phone) and Visa, Mastercard or other methods on Paynow's secure page. Card details never touch this site. Card availability depends on your Paynow account, so ask Paynow to enable it.
 - **Enquiries:** every product page has WhatsApp, email, call and Instagram buttons, and there is a `/contact` page. Edit the details in `src/lib/site.ts`.
-- **Themes and screen sizes:** dark by default, with a light theme behind the half-moon button in the header. The choice is remembered on the device. Colours live in `src/app/globals.css` (the `--bg`, `--fg`, `--surface` and `--mute` values). Layouts stretch to the full width on phones, tablets, laptops and wide monitors, and respect phone notches.
-- **Fonts:** Inter, stored in `src/fonts/` and served from the site itself, so the build never has to download anything from Google. To use another heading font, see `src/fonts/README.txt`.
+- **Themes and screen sizes:** the site follows your device: dark on a dark-mode phone or computer, light on a light-mode one, and it switches by itself when the device does. The button in the header cycles through "follow my device" (monitor icon), light (sun) and dark (moon), and remembers the choice. Colours live in `src/app/globals.css` (the `--bg`, `--fg`, `--surface` and `--mute` values). Layouts stretch to the full width on phones, tablets, laptops and wide monitors, and respect phone notches. Text grows gently on big screens, and a phone showing the "desktop site" gets larger text so it stays readable.
+- **Intro on the home page:** the PM logo builds itself on a blank screen, then the cover slides away. It plays once per browser session, a tap skips it, and it is skipped for visitors who prefer reduced motion. The logo is drawn in `src/components/ui/PMLogo.tsx`; timing is in the "Intro" block at the bottom of `globals.css`.
+- **Fonts:** body text is Inter, stored in `public/fonts/`. Headings use Syne (the wide black look), loaded from Google Fonts. To serve Syne from this site instead, follow `public/fonts/README.txt`.
+- **Search engines (SEO):** every public page has its own title, description and canonical address; products carry structured data (price, stock, photos) that search engines can show as rich results; `/sitemap.xml` lists every page and product; `/robots.txt` keeps checkout, account and API pages out of search; there is a web app manifest and PM icons. See "Search engines" below.
 - **Policies:** `/faq`, `/privacy`, `/cookies` and `/terms`, plus a short cookie notice. Read them and check they match how you really run the shop.
 - **Emails:** Cloudflare Email Service. Customers get an order confirmation once their payment clears, and you get a new-order alert.
 
@@ -37,6 +39,8 @@ Build settings: build command `npx opennextjs-cloudflare build`, deploy command 
 | `NEXT_PUBLIC_SITE_URL` | your live address, for example `https://peacemagents.yourname.workers.dev` |
 | `NEXT_PUBLIC_CURRENCY` | `USD` (or the currency your Paynow account uses) |
 | `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` | Optional. Cloudflare Web Analytics token. See `LAUNCH.md` |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | Optional. The code Google Search Console gives you (see "Search engines") |
+| `NEXT_PUBLIC_SELF_HOST_SYNE` | Optional. `true` once you have put the Syne font files in `public/fonts/` |
 
 These are baked in at build time, so changing them needs a new deploy.
 
@@ -86,6 +90,14 @@ Go to `/login` and sign in with `ADMIN_EMAIL` and `ADMIN_PASSWORD`. You land on 
 
 Changing `ADMIN_PASSWORD` later (update the secret) changes your login straight away. Nobody can sign up with the admin email.
 
+## Search engines
+
+1. **Set your address.** Add the build variable `NEXT_PUBLIC_SITE_URL` (for example `https://peacemagents.co.zw` once you have your own domain). Until then the site uses its `workers.dev` address for canonical links, the sitemap and structured data.
+2. **Register with Google.** Open Google Search Console, add your site, and copy the verification code it offers (the "HTML tag" method gives a `content="..."` value). Add it as the build variable `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`, deploy, press Verify, then submit `https://your-address/sitemap.xml`. Bing Webmaster Tools can import the same site from Search Console.
+3. **Write good product pages.** In the admin, give each product a clear name ("Minimal Boxy Tee, Black") and a real description, and add photos. These become the search result title, text and image.
+4. **A custom domain helps a lot.** A `workers.dev` address can be indexed, but search engines and shoppers trust a domain of your own more. Add one under your Worker's Settings > Domains & Routes.
+5. **Time.** New sites usually take days to weeks to appear in Google, and ranking depends on links, content and traffic, which no setting can force. Share the site on Instagram and WhatsApp; links from your own channels help.
+
 ## Using the admin
 
 - **Products:** name, web address, price, description, sizes with stock, image links, "show in shop" and "this is a drop" with a date and time (this drives the countdown). Untick "Show in shop" to hide a product without deleting it.
@@ -126,7 +138,8 @@ Local development uses a local copy of the D1 database. Put `ADMIN_PASSWORD` and
 - **Old pending orders** are cleaned up whenever someone starts a checkout or you open the admin. There is no background timer.
 - **If the database is not created automatically:** run `npx wrangler d1 create peacemagents-db`, then add the printed `"database_id": "..."` next to `database_name` in `wrangler.jsonc`.
 - Do not add `export const runtime = 'edge'` to routes.
-- **Admin security:** `/admin` pages and every `/api/admin` route check your signed-in session on the server, so a visitor who guesses the address gets nothing. You do not need a separate admin site. If you want an extra layer, you can put Cloudflare Access (Zero Trust) in front of the paths `/admin*` and `/api/admin*` in the Cloudflare dashboard.
+- **Admin security:** `/admin` pages and every `/api/admin` route check your signed-in session on the server. Anyone who is not signed in as the admin, customers included, sees the normal "Not found" page at `/admin`, so they are never sent to a sign-in screen. To reach the admin, sign in at `/login` with `ADMIN_EMAIL` and `ADMIN_PASSWORD`, then open `/admin` (or press **Open admin** on `/account`). The new-order alert email links through sign-in for the same reason. The admin address is not listed in `robots.txt` or anywhere on the public site. There is no separate admin site, because it would add a second deployment without adding protection beyond this.
+- **Optional extra lock, once you have your own domain:** Cloudflare Access (Zero Trust) can sit in front of the paths `/admin*` and `/api/admin*` so that even the sign-in check is only reached by approved emails. Cloudflare documents this for hostnames and paths on your own domain. Do not switch Access on for the whole Worker, because that would lock customers out of the shop too.
 
 ## Structure
 

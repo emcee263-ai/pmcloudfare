@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { LegalPage } from '@/components/ui/LegalPage';
 import { SITE } from '@/lib/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: 'FAQ',
-  description: 'Answers about paying, delivery, returns, sizing and drops at PEACEMAGENTS.',
-};
+  description: 'Answers about paying with Ecocash, OneMoney or card, delivery, returns, sizing and drops at PEACEMAGENTS.',
+  path: '/faq',
+});
 
 const FAQ: { group: string; items: { q: string; a: React.ReactNode }[] }[] = [
   {

@@ -26,7 +26,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
   const mobile = order.payment_method !== 'paynow';
 
   return (
-    <section className="shell grid gap-12 py-10 sm:py-16 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-20">
+    <section className="shell grid gap-12 py-10 sm:py-16 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:gap-12 lg:gap-20">
       <div>
         <p className="text-sm text-mute">Order {orderRef(order.id)}</p>
         <h1 className="mt-2 page-title font-display font-extrabold tracking-tight">

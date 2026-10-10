@@ -2,11 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Body font: Inter, served from /public/fonts. Plain @font-face (no build-time font download), and the
+   font stack in tailwind.config.ts names the family directly, so text is never left without a font. */
+@font-face {
+  font-family: 'PM Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/Inter-Regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'PM Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/Inter-Medium.woff') format('woff');
+}
+@font-face {
+  font-family: 'PM Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/Inter-SemiBold.woff') format('woff');
+}
+@font-face {
+  font-family: 'PM Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/Inter-Bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'PM Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/Inter-ExtraBold.woff') format('woff');
+}
+
 @layer base {
-  /* Colours are stored as space-separated channels so Tailwind can add opacity to them. */
+  /* Colours are stored as space-separated channels so Tailwind can add opacity to them.
+     Dark is the default. A visitor whose device is set to light mode gets the light theme (even before any
+     script runs), and the half-moon button in the header lets them pick light, dark, or follow the device. */
   :root {
-    --font-syne: 'Arial', 'Helvetica Neue', sans-serif;
-    --font-inter: 'Arial', 'Helvetica Neue', sans-serif;
     color-scheme: dark;
     --bg: 0 0 0;
     --surface: 18 18 18;
@@ -14,6 +52,17 @@
     --mute: 128 128 128;
     --fg: 255 255 255;
     --on-fg: 0 0 0;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      color-scheme: light;
+      --bg: 255 255 255;
+      --surface: 244 244 244;
+      --surface-raised: 232 232 232;
+      --mute: 102 102 102;
+      --fg: 10 10 10;
+      --on-fg: 255 255 255;
+    }
   }
   :root[data-theme='light'] {
     color-scheme: light;
@@ -24,9 +73,29 @@
     --fg: 10 10 10;
     --on-fg: 255 255 255;
   }
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+    --bg: 0 0 0;
+    --surface: 18 18 18;
+    --surface-raised: 26 26 26;
+    --mute: 128 128 128;
+    --fg: 255 255 255;
+    --on-fg: 0 0 0;
+  }
+
+  /* Text size grows gently with the screen, so big monitors do not look small. Every size in the site is in rem,
+     so this one line scales the whole layout. */
   html {
     @apply bg-ink text-white;
     -webkit-text-size-adjust: 100%;
+    font-size: clamp(16px, 0.55vw + 11px, 24px);
+  }
+  /* A phone showing the "desktop site" (or a tablet) lays the page out about 1000px wide and shrinks it to fit,
+     which makes everything tiny. A touch screen in that range gets larger text to make up for it. */
+  @media (pointer: coarse) and (min-width: 700px) and (max-width: 1100px) {
+    html {
+      font-size: 20px;
+    }
   }
   body {
     @apply bg-ink font-sans text-white antialiased;
@@ -72,6 +141,84 @@
   }
   .field-label {
     @apply mb-2 block text-sm text-mute;
+  }
+}
+
+/* ---------- Intro: the PM logo on the home page ----------
+   Driven by CSS alone: the bars rise, the cover holds for a moment, then slides up. If scripts fail, it still
+   leaves by itself. It is hidden for visitors who prefer less motion and for repeat visits in the same session. */
+.pm-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1.75rem;
+  background: rgb(var(--bg));
+  color: rgb(var(--fg));
+  overscroll-behavior: contain;
+  touch-action: none;
+  cursor: pointer;
+  animation: pm-cover-out 0.8s cubic-bezier(0.76, 0, 0.24, 1) 2.2s forwards;
+}
+.pm-splash svg {
+  width: min(62vw, 22rem);
+  height: auto;
+  overflow: visible;
+}
+.pm-bar {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: scaleY(0);
+  animation: pm-rise 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.pm-bar:nth-child(1) { animation-delay: 0.15s; }
+.pm-bar:nth-child(2) { animation-delay: 0.3s; }
+.pm-bar:nth-child(3) { animation-delay: 0.45s; }
+.pm-bar:nth-child(4) { animation-delay: 0.6s; }
+.pm-bar:nth-child(5) { animation-delay: 0.75s; }
+.pm-dot {
+  fill: #e50914;
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  transform: scale(0);
+  animation: pm-pop 0.4s cubic-bezier(0.3, 1.6, 0.5, 1) 1.45s forwards;
+}
+.pm-splash-name {
+  font-family: Syne, 'PM Inter', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.55em;
+  padding-left: 0.55em; /* balances the trailing letter space so the word looks centred */
+  opacity: 0;
+  animation: pm-fade 0.6s ease 1.2s forwards;
+}
+.pm-splash[data-leaving] {
+  animation: pm-cover-skip 0.5s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+html[data-splash='seen'] .pm-splash {
+  display: none;
+}
+@keyframes pm-rise {
+  to { transform: scaleY(1); }
+}
+@keyframes pm-pop {
+  to { transform: scale(1); }
+}
+@keyframes pm-fade {
+  to { opacity: 1; }
+}
+@keyframes pm-cover-out {
+  to { transform: translateY(-100%); visibility: hidden; }
+}
+@keyframes pm-cover-skip {
+  to { transform: translateY(-100%); visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pm-splash {
+    display: none;
   }
 }
 

@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { NextResponse } from 'next/server';
 import { getVar } from '@/lib/cloudflare';
 import { getDb } from '@/lib/db';
@@ -235,11 +235,13 @@ export async function requireUser(next: string) {
   return user;
 }
 
-/** For admin pages: only the owner gets in. */
+/**
+ * For admin pages: only the owner gets in. Anyone else, signed in or not, sees the ordinary "page not found"
+ * page, so customers are never sent to a sign-in screen or told that an admin area exists.
+ */
 export async function requireAdmin() {
   const user = await getCurrentUser();
-  if (!user) redirect('/login?next=/admin');
-  if (user.role !== 'admin') redirect('/');
+  if (!user || user.role !== 'admin') notFound();
   return user;
 }
 

@@ -35,13 +35,14 @@ export const EMPTY_ADDRESS: Address = {
 };
 
 export const PAYMENT_METHODS = [
-  { value: 'ecocash', label: 'Ecocash', hint: 'You approve the payment on your phone with your PIN.' },
-  { value: 'onemoney', label: 'OneMoney', hint: 'You approve the payment on your phone with your PIN.' },
   {
     value: 'paynow',
     label: 'Visa, Mastercard or other',
+    short: 'Card',
     hint: 'You pay on Paynow\'s secure page. Card details are entered there, never on this site.',
   },
+  { value: 'ecocash', label: 'Ecocash', short: 'Ecocash', hint: 'You approve the payment on your phone with your PIN.' },
+  { value: 'onemoney', label: 'OneMoney', short: 'OneMoney', hint: 'You approve the payment on your phone with your PIN.' },
 ] as const;
 
 export const checkoutSchema = z

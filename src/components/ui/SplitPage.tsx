@@ -9,7 +9,7 @@ export function SplitPage({
   children: React.ReactNode;
 }) {
   return (
-    <section className="shell grid gap-10 py-10 sm:py-16 lg:min-h-[calc(100dvh-10rem)] lg:grid-cols-2 lg:items-center lg:gap-20">
+    <section className="shell grid gap-10 py-10 sm:py-16 md:min-h-[calc(100dvh-10rem)] md:grid-cols-2 md:items-center md:gap-12 lg:gap-20">
       <div>
         <h1 className="page-title font-display font-extrabold tracking-tight">{title}</h1>
         {intro && <p className="mt-6 max-w-md text-mute">{intro}</p>}

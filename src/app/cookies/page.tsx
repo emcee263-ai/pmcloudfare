@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { LegalPage } from '@/components/ui/LegalPage';
 
-export const metadata: Metadata = { title: 'Cookie policy' };
+export const metadata: Metadata = pageMeta({
+  title: 'Cookie policy',
+  description: 'The few cookies and browser storage items PEACEMAGENTS uses, and why. No advertising or tracking cookies.',
+  path: '/cookies',
+});
 
 const ROWS = [
   {
@@ -20,8 +25,14 @@ const ROWS = [
   {
     name: 'pm-theme',
     kind: 'Browser storage',
-    purpose: 'Remembers whether you chose the dark or the light theme.',
+    purpose: 'Remembers if you chose the dark or the light theme. If you never choose, the site follows your device and stores nothing.',
     lasts: 'Until you clear your browser data',
+  },
+  {
+    name: 'pm-splash',
+    kind: 'Browser storage (this visit only)',
+    purpose: 'Remembers that the logo intro has played, so it does not repeat while you browse.',
+    lasts: 'Until you close the browser tab',
   },
   {
     name: 'pm-notice-seen',
@@ -79,7 +90,9 @@ export default function CookiesPage() {
         <h2>Third parties</h2>
         <p>
           When you pay by card or other wallet you leave this site and go to Paynow, which sets its own cookies under its
-          own policy. Links to WhatsApp and Instagram work the same way once you open them.
+          own policy. Links to WhatsApp and Instagram work the same way once you open them. The heading font (Syne) can be
+          loaded from Google Fonts, in which case Google receives your IP address and browser details to send you the font.
+          It does not set cookies for this.
         </p>
       </div>
 

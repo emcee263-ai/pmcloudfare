@@ -1,9 +1,14 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { LegalPage } from '@/components/ui/LegalPage';
 import { mailLink, SITE } from '@/lib/site';
 
-export const metadata: Metadata = { title: 'Privacy policy' };
+export const metadata: Metadata = pageMeta({
+  title: 'Privacy policy',
+  description: 'How PEACEMAGENTS collects, uses and protects your personal data.',
+  path: '/privacy',
+});
 
 export default function PrivacyPage() {
   return (
@@ -54,6 +59,7 @@ export default function PrivacyPage() {
         <h2>Who handles it for us</h2>
         <ul>
           <li><strong>Paynow</strong> processes payments (paynow.co.zw) and has its own privacy policy.</li>
+          <li><strong>Google Fonts</strong> can supply the heading font. When it does, Google sees your IP address and browser details as part of sending the font file.</li>
           <li><strong>Cloudflare</strong> hosts the website, stores our database and sends our order emails. Your data may be processed on servers outside {SITE.country}.</li>
           <li>Delivery partners receive your name, phone number and address so they can deliver.</li>
         </ul>

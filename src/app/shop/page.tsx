@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ProductCard } from '@/components/product/ProductCard';
 import { getProducts } from '@/lib/products';
+import { pageMeta } from '@/lib/seo';
 import { cn, getKind } from '@/lib/utils';
 
-export const metadata: Metadata = { title: 'Shop' };
 export const dynamic = 'force-dynamic';
 
 const FILTERS = [
@@ -14,6 +14,27 @@ const FILTERS = [
   { key: 'cap', label: 'Caps' },
   { key: 'bottom', label: 'Bottoms' },
 ] as const;
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ kind?: string }>;
+}): Promise<Metadata> {
+  const { kind = 'all' } = await searchParams;
+  const filter = FILTERS.find((f) => f.key === kind);
+  if (!filter || filter.key === 'all') {
+    return pageMeta({
+      title: 'Shop',
+      description: 'Shop PEACEMAGENTS minimal streetwear: hoodies, tees and caps in small runs. Pay with Ecocash, OneMoney or card.',
+      path: '/shop',
+    });
+  }
+  return pageMeta({
+    title: filter.label,
+    description: `${filter.label} from PEACEMAGENTS: minimal streetwear in small runs. Pay with Ecocash, OneMoney or card.`,
+    path: `/shop?kind=${filter.key}`,
+  });
+}
 
 export default async function ShopPage({
   searchParams,

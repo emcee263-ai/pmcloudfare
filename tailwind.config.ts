@@ -17,9 +17,11 @@ const config: Config = {
         mute: 'rgb(var(--mute) / <alpha-value>)', // secondary text
         crimson: '#E50914', // drop and sale badges only
       },
+      // Family names are written out in full (no CSS variables), so a missing variable can never drop the site to a serif font.
+      // Headings: Syne when available, otherwise Inter ExtraBold. Everything else: Inter.
       fontFamily: {
-        display: ['var(--font-inter)', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        sans: ['var(--font-inter)', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        display: ['Syne', '"PM Inter"', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+        sans: ['"PM Inter"', 'Inter', '"Helvetica Neue"', 'Arial', 'sans-serif'],
       },
     },
   },

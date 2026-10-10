@@ -168,7 +168,8 @@ export function confirmationEmail(order: Order, origin: string) {
 
 function adminAlertEmail(order: Order, origin: string) {
   const ref = orderRef(order.id);
-  const link = `${origin}/admin/orders`;
+  // Signed-out visitors get a plain "not found" on /admin, so the alert goes through sign-in first.
+  const link = `${origin}/login?next=${encodeURIComponent('/admin/orders')}`;
 
   const html = layout(
     `New paid order ${ref}`,

@@ -25,9 +25,9 @@
 
   // Not secret, so they live here and are re-applied on every deploy.
   // EDIT THESE TWO before you deploy.
-  "vars": {
     // "Name <address>" on a domain you have set up for Cloudflare Email Service.
-    "EMAIL_FROM": "PEACEMAGENTS <orders@your-domain.com>",
+  "vars": {
+    "EMAIL_FROM": "PEACEMAGENTS <info@peacemagents.com>",
     // Your own email. It is your admin login and where new-order alerts go.
     "ADMIN_EMAIL": "feremengamcgregor@gmail.com",
     // Paynow test mode. Change to "false" when you go live.

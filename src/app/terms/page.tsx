@@ -1,9 +1,14 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { LegalPage } from '@/components/ui/LegalPage';
 import { SITE } from '@/lib/site';
 
-export const metadata: Metadata = { title: 'Terms of sale' };
+export const metadata: Metadata = pageMeta({
+  title: 'Terms of sale',
+  description: 'Terms of sale for PEACEMAGENTS: prices, payment, delivery and returns.',
+  path: '/terms',
+});
 
 export default function TermsPage() {
   return (

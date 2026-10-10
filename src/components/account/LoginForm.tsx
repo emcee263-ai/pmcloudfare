@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 function safeNext(value: string | null) {
-  return value && value.startsWith('/') && !value.startsWith('//') ? value : null;
+  // Only plain paths on this site. Slashes and backslashes at the start could point to another site.
+  return value && value.startsWith('/') && !value.startsWith('//') && !value.includes('\\') ? value : null;
 }
 
 export function LoginForm() {
@@ -47,7 +48,7 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="w-full max-w-xl space-y-5" noValidate={false}>
+    <form onSubmit={onSubmit} className="w-full space-y-5">
       <div className="flex gap-2">
         {(['login', 'signup'] as const).map((m) => (
           <button

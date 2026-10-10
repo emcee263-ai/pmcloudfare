@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import Link from 'next/link';
 import { Countdown } from '@/components/home/Countdown';
 import { ProductCard } from '@/components/product/ProductCard';
@@ -6,7 +7,11 @@ import { ProductImage } from '@/components/product/ProductImage';
 import { getProducts } from '@/lib/products';
 import { formatPrice } from '@/lib/utils';
 
-export const metadata: Metadata = { title: 'Drops' };
+export const metadata: Metadata = pageMeta({
+  title: 'Drops',
+  description: 'Limited PEACEMAGENTS drops with a countdown to each release. Small runs: when a drop sells out, it is gone.',
+  path: '/drops',
+});
 export const dynamic = 'force-dynamic';
 
 export default async function DropsPage() {

@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
+import { pageMeta } from '@/lib/seo';
 import { LegalPage } from '@/components/ui/LegalPage';
 import { instagramLink, mailLink, phoneLink, SITE, whatsappLink } from '@/lib/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMeta({
   title: 'Contact',
   description: 'Reach PEACEMAGENTS on WhatsApp, phone, email or Instagram.',
-};
+  path: '/contact',
+});
 
 export default function ContactPage() {
   const rows = [

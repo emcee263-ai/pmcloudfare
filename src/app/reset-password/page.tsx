@@ -17,7 +17,7 @@ export default async function ResetPasswordPage({ searchParams }: { searchParams
       {token ? (
         <ResetPasswordForm token={token} />
       ) : (
-        <div className="max-w-xl space-y-6">
+        <div className="space-y-6">
           <p className="text-mute">This link is missing its code. Ask for a new one.</p>
           <Link href="/forgot-password" className="btn">Reset my password</Link>
         </div>
